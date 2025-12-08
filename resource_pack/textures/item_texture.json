@@ -1,0 +1,21 @@
+{
+  "resource_pack_name": "bmc_weapon",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "airride": {
+      "textures": "textures/bmc/airride"
+    },
+    "bastet": {
+      "textures": "textures/bmc/bastet"
+    },
+    "leaper": {
+      "textures": "textures/bmc/leaper"
+    },
+    "parallel": {
+      "textures": "textures/bmc/parallel"
+    },
+    "shock_waver": {
+      "textures": "textures/bmc/shock_waver"
+    }
+  }
+}

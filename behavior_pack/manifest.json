@@ -1,0 +1,37 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "BMC_Weapon - Behavior",
+    "description": "BMC_Weaponのビヘイビア―パック",
+    "uuid": "82b9174d-ea3d-42ae-986c-b42ce3644760",
+    "version": [ 1, 0, 0 ],
+    "min_engine_version": [ 1, 21, 120 ]
+  },
+  "modules": [
+    {
+      "description": "script",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "f26e468f-6c85-4a03-ad1a-24dcb8763c6b",
+      "version": [ 1, 0, 0 ],
+      "entry": "scripts/index-C2T0aVVo.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "beta"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "beta"
+    },
+    {
+      "module_name": "@minecraft/server-net",
+      "version": "beta"
+    }
+  ],
+  "metadata": {
+    "authors": [ "vdiaztaylor" ]
+  }
+}

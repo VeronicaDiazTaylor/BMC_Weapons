@@ -1,0 +1,21 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "BMC_Weapon - Resource",
+    "description": "BMC_Weaponのリソースパック",
+    "uuid": "860d5eeb-4071-4c5c-a5a6-08bb717b4772",
+    "version": [ 1, 0, 0 ],
+    "min_engine_version": [ 1, 21, 120 ]
+  },
+  "modules": [
+    {
+      "description": "BMC_Weapon - Resource",
+      "type": "resources",
+      "uuid": "55053947-d8a9-43eb-9f28-17581d37f7dc",
+      "version": [ 1, 0, 0 ]
+    }
+  ],
+  "metadata": {
+    "authors": [ "vdiaztaylor" ]
+  }
+}
