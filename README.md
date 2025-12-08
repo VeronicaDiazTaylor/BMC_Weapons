@@ -1,0 +1,2 @@
+# BMC_Weapons
+BowyersMCの武器機構を実装したビヘイビアパックとリソースパック
