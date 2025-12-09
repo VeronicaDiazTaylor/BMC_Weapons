@@ -18,8 +18,8 @@ Releasesに添付するつもりであるものは使えるようにする予定
 パケットなどを使えるようになり次第、実装してみたくは思ってますが期待しないでください。  
 - [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/airride.png" /> Airride  -  スニークトリガーの実装例として作成
 - [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/bastet.png" /> Bastet  -  腕振りトリガーの実装例として作成
-- [ ] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/leaper.png" /> Leaper  -  効果継続時間を持たない実装例として作成
-- [ ] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/parallel.png" /> Parallel  -  可変クールタイムの実装例として作成
+- [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/leaper.png" /> Leaper  -  効果継続時間を持たない実装例として作成
+- [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/parallel.png" /> Parallel  -  可変クールタイムの実装例として作成
 - [ ] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/shock_waver.png" /> ShockWaver  -  エンティティを扱う実装例として作成
 
 <br />
