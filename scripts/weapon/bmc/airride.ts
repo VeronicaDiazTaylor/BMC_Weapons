@@ -20,14 +20,17 @@ import { Weapon, WeaponTicks } from '../weapon';
 import { delayed, Vector3 } from '@gollilla/keystone';
 
 class Airride extends Weapon {
-  static DURATION = 5*20;
-  static COOLDOWM = 18*20;
-  static SLOW_FALLING = 25;
-  static FLAP_RECOVERY = 12;
+  private static DURATION = 5*20;
+  private static COOLDOWN = 18*20;
+  private static SLOW_FALLING = 25;
+  private static FLAP_RECOVERY = 12;
 
   typeId = 'bmc:airride';
 
   override onClick(player: Player): WeaponTicks {
+    // 羽ばたきのフラグを消す
+    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`);
+
     // 視点方向のベクトルを正規化
     const v = Vector3.fromBDS(player.getViewDirection()).normalize();
     // 任意に倍率調整をする
@@ -43,12 +46,12 @@ class Airride extends Weapon {
     player.dimension.playSound('mob.ghast.charge', player.location);
 
     // 効果継続時間とクールダウン
-    return { duration: Airride.DURATION, cooldown: Airride.COOLDOWM };
+    return { duration: Airride.DURATION, cooldown: Airride.COOLDOWN };
   }
 
   override onSneaking(player: Player) {
     // 羽ばたきクールダウンの判定処理
-    const canFlap = player.getDynamicProperty(`weapon_data:${this.typeId}:flap`) ?? true;
+    const canFlap = player.getDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`) ?? true;
     // 羽ばたけなければここで処理を終わらせる
     if (!canFlap) return;
 
@@ -72,18 +75,18 @@ class Airride extends Weapon {
     player.addEffect('minecraft:slow_falling', Airride.SLOW_FALLING, { amplifier: 1 });
 
     // 羽ばたきのスパム防止のためフラグを立てて不可能にする
-    player.setDynamicProperty(`weapon_data:${this.typeId}:flap`, false);
+    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`, false);
 
     // 数ティック後に設定値にnullを渡して動的プロパティを削除する
-    delayed(Airride.FLAP_RECOVERY, () => player.setDynamicProperty(`weapon_data:${this.typeId}:flap`));
+    delayed(
+      Airride.FLAP_RECOVERY,
+      () => player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`)
+    );
   }
 
   override onEnd(player: Player): void {
     // 効果音
     player.dimension.playSound('mob.ghast.moan', player.location);
-
-    // 念のため羽ばたきのフラグを消しておく
-    player.setDynamicProperty(`weapon_data:${this.typeId}:flap`);
   }
 }
 

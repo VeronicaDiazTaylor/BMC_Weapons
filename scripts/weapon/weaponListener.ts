@@ -15,8 +15,8 @@
  * 
  */
 import { ButtonState, InputButton, ItemStack, ItemUseAfterEvent, Player, PlayerButtonInputAfterEvent, PlayerLeaveBeforeEvent, PlayerSwingStartAfterEvent, world } from '@minecraft/server';
-import { getAllWeapon, getWeapon } from './weaponRegistry';
-import { WeaponTicks } from './weapon';
+import { getWeapon } from './weaponRegistry';
+import { Weapon, WeaponTicks } from './weapon';
 import { delayed, repeating } from '@gollilla/keystone';
 
 /**
@@ -27,7 +27,7 @@ import { delayed, repeating } from '@gollilla/keystone';
  */
 function nowCooldown(player: Player, weaponItem: ItemStack): boolean {
   const now = Date.now();
-  const until = player.getDynamicProperty(`weapon_cooldown:${weaponItem.typeId}`) ?? now;
+  const until = player.getDynamicProperty(`${Weapon.COOLDOWN_PREFIX + weaponItem.typeId}`) ?? now;
   return (now < Number(until));
 }
 
@@ -38,7 +38,7 @@ function nowCooldown(player: Player, weaponItem: ItemStack): boolean {
  * @returns {boolean}
  */
 function nowActivated(player: Player, weaponItem: ItemStack): boolean {
-  return Boolean(player.getDynamicProperty(`weapon_activated:${weaponItem.typeId}`) ?? false);
+  return Boolean(player.getDynamicProperty(`${Weapon.ACTIVATED_PREFIX + weaponItem.typeId}`) ?? false);
 }
 
 /**
@@ -48,7 +48,7 @@ function nowActivated(player: Player, weaponItem: ItemStack): boolean {
  * @param weaponTicks
  */
 function activate(player: Player, weaponItem: ItemStack, weaponTicks: WeaponTicks) {
-  player.setDynamicProperty(`weapon_activated:${weaponItem.typeId}`, true);
+  player.setDynamicProperty(`${Weapon.ACTIVATED_PREFIX + weaponItem.typeId}`, true);
 
   delayed(weaponTicks.duration, () => {
     const weapon = getWeapon(weaponItem.typeId);
@@ -56,10 +56,10 @@ function activate(player: Player, weaponItem: ItemStack, weaponTicks: WeaponTick
 
     const now = Date.now();
     const millisecTick = weaponTicks.cooldown / 20 * 1000; 
-    player.setDynamicProperty(`weapon_cooldown:${weaponItem.typeId}`, now + millisecTick);
+    player.setDynamicProperty(`${Weapon.COOLDOWN_PREFIX + weaponItem.typeId}`, now + millisecTick);
     player.startItemCooldown(weaponItem.typeId, weaponTicks.cooldown);
 
-    player.setDynamicProperty(`weapon_activated:${weaponItem.typeId}`);
+    player.setDynamicProperty(`${Weapon.ACTIVATED_PREFIX + weaponItem.typeId}`);
   });
 }
 
@@ -130,8 +130,11 @@ repeating({
 
 world.beforeEvents.playerLeave.subscribe((event: PlayerLeaveBeforeEvent) => {
   const player = event.player;
-  for (const weapon of getAllWeapon().values()) {
-    player.setDynamicProperty(`weapon_cooldown:${weapon.typeId}`);
-    player.setDynamicProperty(`weapon_activated:${weapon.typeId}`);
+  if (!player) return;
+
+  for (const id of player.getDynamicPropertyIds()) {
+    if (id in [ Weapon.COOLDOWN_PREFIX, Weapon.ACTIVATED_PREFIX, Weapon.TEMP_DATA_PREFIX ]) {
+      player.setDynamicProperty(id);
+    }
   }
 });

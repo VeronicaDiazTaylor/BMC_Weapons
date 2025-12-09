@@ -28,6 +28,9 @@ export type WeaponTicks = {
 }
 
 export abstract class Weapon {
+  static COOLDOWN_PREFIX = 'weapon_cooldown:';
+  static ACTIVATED_PREFIX = 'weapon_activated:';
+  static TEMP_DATA_PREFIX = 'weapon_temporary_data:';
   
   /** ビヘイビアーで設定したタイプID */
   abstract typeId: string;
@@ -40,21 +43,25 @@ export abstract class Weapon {
   onClick(player: Player): WeaponTicks {
     return { duration: 0, cooldown: 0 };
   }
+  
   /**
    * 腕を振ったときの処理
    * @param player
    */
   onArmSwing?(player: Player) {}
+  
   /**
    * スニークをした時の処理
    * @param player
    */
   onSneaking?(player: Player) {}
+  
   /**
    * 毎ティックの処理
    * @param player
    */
   onTick?(player: Player) {}
+
   /**
    * 効果が切れたときの処理
    * @param player
