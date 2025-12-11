@@ -27,13 +27,18 @@ export type WeaponTicks = {
   cooldown: number
 }
 
-export abstract class Weapon {
-  static COOLDOWN_PREFIX = 'weapon_cooldown:';
-  static ACTIVATED_PREFIX = 'weapon_activated:';
-  static TEMP_DATA_PREFIX = 'weapon_temporary_data:';
-  
+export abstract class Weapon {  
   /** ビヘイビアーで設定したタイプID */
   abstract typeId: string;
+
+  /**
+   * プロパティキーの生成
+   * @param key
+   * @returns {string}
+   */
+  protected tempDataKey(key: string): string {
+    return `weapon_temporary_data:${this.typeId}:${key}`;
+  }
 
   /**
    * ウェポン起動処理
@@ -57,10 +62,12 @@ export abstract class Weapon {
   onSneaking?(player: Player) {}
   
   /**
-   * 毎ティックの処理
+   * 効果継続中の毎ティック処理
    * @param player
+   * @param isWeaponInHand 手に持っているかどうか
+   * @param isActivated 効果継続中かどうか
    */
-  onTick?(player: Player) {}
+  onTick?(player: Player, isWeaponInHand: boolean, isActivated: boolean) {}
 
   /**
    * 効果が切れたときの処理

@@ -25,12 +25,14 @@ class Bastet extends Weapon {
 
   typeId = 'bmc:bastet';
 
+  private boostKey = this.tempDataKey('boost');
+
   override onClick(player: Player): WeaponTicks {
     // ブーストのフラグを消す
-    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:boost`);
+    player.setDynamicProperty(this.boostKey);
     
     // 移動速度上昇の付与
-    player.addEffect('minecraft:speed', Bastet.DURATION, { amplifier: 3 });
+    player.addEffect('minecraft:speed', Bastet.DURATION, { amplifier: 4 });
 
     // 効果音
     player.dimension.playSound('mob.cat.meow', player.location);
@@ -41,15 +43,15 @@ class Bastet extends Weapon {
 
   override onArmSwing(player: Player) {
     // ブースト可能か判定処理
-    const canBoost = player.getDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:boost`) ?? true;
+    const canBoost = player.getDynamicProperty(this.boostKey) ?? true;
     // ブーストできなければここで処理を終わらせる
     if (!canBoost) return;
 
     // ブーストのベクトルを付与
     player.clearVelocity();
     const v = Vector3.fromBDS(player.getViewDirection()).normalize();
-    v.x *= 1.3;
-    v.z *= 1.3;
+    v.x *= 2.1;
+    v.z *= 2.1;
     v.y = 0.1;
     player.applyImpulse(v);
 
@@ -65,7 +67,7 @@ class Bastet extends Weapon {
     player.dimension.spawnParticle('minecraft:mob_effect', location, molang);
 
     // ブースト使用のフラグを立てて再発動不可能にする
-    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:boost`, false);
+    player.setDynamicProperty(this.boostKey, false);
   }
 
   override onEnd(player: Player): void {

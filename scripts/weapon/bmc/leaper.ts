@@ -32,9 +32,9 @@ class Leaper extends Weapon {
     // スニークの判定
     const isSneaking = player.isSneaking;
     // 任意に倍率調整をする (ifは長いので三項演算子使います)
-    v.x *= isSneaking ? 0.5 : 0.01;
-    v.z *= isSneaking ? 0.5 : 0.01;
-    v.y = isSneaking ? 0.8 : 2.5;
+    v.x *= isSneaking ? 1.35 : 0.01;
+    v.z *= isSneaking ? 1.35 : 0.01;
+    v.y = isSneaking ? 1.5 : 2.5;
     // 内部で計算されている速度を消す
     player.clearVelocity();
     // プレイヤーに適応

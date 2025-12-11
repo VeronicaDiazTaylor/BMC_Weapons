@@ -20,6 +20,7 @@ import { Weapon, WeaponTicks } from '../weapon';
 import { delayed, Vector3 } from '@gollilla/keystone';
 
 class Airride extends Weapon {
+  // 静的な数値の定義
   private static DURATION = 5*20;
   private static COOLDOWN = 18*20;
   private static SLOW_FALLING = 25;
@@ -27,9 +28,12 @@ class Airride extends Weapon {
 
   typeId = 'bmc:airride';
 
+  // プロパティキーの定義
+  private flapKey = this.tempDataKey('flap');
+
   override onClick(player: Player): WeaponTicks {
     // 羽ばたきのフラグを消す
-    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`);
+    player.setDynamicProperty(this.flapKey);
 
     // 視点方向のベクトルを正規化
     const v = Vector3.fromBDS(player.getViewDirection()).normalize();
@@ -51,7 +55,7 @@ class Airride extends Weapon {
 
   override onSneaking(player: Player) {
     // 羽ばたきクールダウンの判定処理
-    const canFlap = player.getDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`) ?? true;
+    const canFlap = player.getDynamicProperty(this.flapKey) ?? true;
     // 羽ばたけなければここで処理を終わらせる
     if (!canFlap) return;
 
@@ -75,12 +79,12 @@ class Airride extends Weapon {
     player.addEffect('minecraft:slow_falling', Airride.SLOW_FALLING, { amplifier: 1 });
 
     // 羽ばたきのスパム防止のためフラグを立てて不可能にする
-    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`, false);
+    player.setDynamicProperty(this.flapKey, false);
 
     // 数ティック後に設定値にnullを渡して動的プロパティを削除する
     delayed(
       Airride.FLAP_RECOVERY,
-      () => player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:flap`)
+      () => player.setDynamicProperty(this.flapKey)
     );
   }
 

@@ -14,7 +14,7 @@
  * ScriptAPIのビヘイビアー開発支援フレームワーク「Keystone」を用いているため、TypeScriptで書かれています。
  * 
  */
-import { Player } from '@minecraft/server';
+import { Player, Vector3 as BDSVector3 } from '@minecraft/server';
 import { register } from '../weaponRegistry';
 import { Weapon, WeaponTicks } from '../weapon';
 import { delayed, Vector3 } from '@gollilla/keystone';
@@ -27,10 +27,13 @@ class Parallel extends Weapon {
 
   typeId = 'bmc:parallel';
 
+  private lastLocationKey = this.tempDataKey('last_location');
+  private lastRotationKey = this.tempDataKey('last_rotation');
+
   override onClick(player: Player): WeaponTicks {
     // ひとつ前の座標を呼び出し
-    const lastLocation = player.getDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:last_location`);
-    const lastRotation = player.getDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:last_rotation`);
+    const lastLocation = player.getDynamicProperty(this.lastLocationKey) as BDSVector3 | undefined;
+    const lastRotation = player.getDynamicProperty(this.lastRotationKey) as BDSVector3 | undefined;
 
     // 交換する今の座標を取得
     const currentLocation = player.location;
@@ -42,51 +45,51 @@ class Parallel extends Weapon {
       player.dimension.playSound('mob.evocation_illager.prepare_summon', player.location, { volume: 0.85 });
     });
 
-    // 過去の座標データが存在しない場合
-    if (!(lastLocation instanceof Vector3)) {
-      // データの保存
-      player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:last_location`, currentLocation);
-      player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:last_rotation`, currentRotation);
+    // データの保存
+    player.setDynamicProperty(this.lastLocationKey, currentLocation);
+    player.setDynamicProperty(this.lastRotationKey, currentRotation);
 
-      // 処理終わり
-      return { duration: 0, cooldown: 1*20 }; 
+    // 過去の座標データが存在しない場合はここで処理終わり
+    if (!lastLocation) {
+      return { duration: 0, cooldown: 1*20 };
     }
 
-    // 距離
+    // 周囲の敵へ喚きの盲目デバフを付与
+    const playerV3 = Vector3.fromBDS(player.location);
+    for (const nearPlayer of player.dimension.getPlayers( { excludeNames: [player.name] } )) {
+      if (playerV3.distance(nearPlayer.location) <= Parallel.ROAR_RANGE) {
+        nearPlayer.addEffect('minecraft:slowness', Parallel.ROAR_BLIND, { amplifier: 3 });
+        nearPlayer.playSound('mob.endermen.scream', { volume: 0.85 });
+      }
+    }
+
+    // 硬直時間の計算
     const distance = Vector3.fromBDS(player.location).distance(lastLocation);
     const lagging = Math.min((distance * 0.75), Parallel.MAX_LAGGING);
 
     // 首の向きの取り出し
     let yaw = 0;
     let pitch = 0;
-    if (lastRotation instanceof Vector3) {
+    if (lastRotation) {
       yaw = lastRotation.x;
       pitch = lastRotation.y;
     }
 
     // テレポート
-    player.teleport(lastLocation, { rotation: { x: yaw, y: pitch } });
+    player.teleport(lastLocation, { rotation: { x: yaw, y: pitch }, facingLocation: undefined });
 
     // パーティクル
     for (let i = 0; i < 3; ++i) {
       player.dimension.spawnParticle('minecraft:mob_portal', lastLocation);
     }
 
-    // 硬直
-    const movement = player.getComponent('minecraft:movement');
-    if (movement) movement.setCurrentValue(0);
-
-    // データの保存
-    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:last_location`, currentLocation);
-    player.setDynamicProperty(`${Weapon.TEMP_DATA_PREFIX + this.typeId}:last_rotation`, currentRotation);
+    // TODO:硬直
 
     return { duration: lagging, cooldown: 13*20 };
   }
 
-  override onEnd(player: Player): void {
-    // 硬直を戻す
-    const movement = player.getComponent('minecraft:movement');
-    if (movement) movement.setCurrentValue(movement.defaultValue);
+  override onEnd(): void {
+    // TODO:硬直を戻す
   }
 }
 
