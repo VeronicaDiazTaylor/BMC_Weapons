@@ -14,10 +14,10 @@
  * ScriptAPIのビヘイビアー開発支援フレームワーク「Keystone」を用いているため、TypeScriptで書かれています。
  * 
  */
-import { ButtonState, InputButton, ItemStack, ItemUseAfterEvent, Player, PlayerButtonInputAfterEvent, PlayerLeaveBeforeEvent, PlayerSwingStartAfterEvent, world } from '@minecraft/server';
+import { ButtonState, InputButton, ItemStack, Player, world } from '@minecraft/server';
 import { getWeapon } from './weaponRegistry';
 import { WeaponTicks } from './weapon';
-import { delayed, repeating } from '@gollilla/keystone';
+import { delayed, EventManager, Priority, repeating } from '@gollilla/keystone';
 
 /**
  * クールダウンが進んでいるかどうか
@@ -63,64 +63,87 @@ function activate(player: Player, weaponItem: ItemStack, weaponTicks: WeaponTick
   });
 }
 
-world.afterEvents.itemUse.subscribe((event: ItemUseAfterEvent) => {
-  const player = event.source;
-  const item = event.itemStack;
-  if (!item) return;
-  if (!item.typeId.startsWith('bmc:')) return;
+EventManager.initialize();
 
-  const weapon = getWeapon(item.typeId);
-  if (!weapon) return;
-  if (nowCooldown(player, item)) return;
-  if (nowActivated(player, item)) return;
-  if (!player || !player.isValid) return;
-
-  const weaponTicks = weapon.onClick(player);
-  activate(player, item, weaponTicks);
+EventManager.registerAfter('itemUse', {
+  handler(event) {
+    const player = event.source;
+    const item = event.itemStack;
+    if (!item) return;
+    if (!item.typeId.startsWith('bmc:')) return;
+    
+    const weapon = getWeapon(item.typeId);
+    if (!weapon) return;
+    if (nowCooldown(player, item)) return;
+    if (nowActivated(player, item)) return;
+    if (!player || !player.isValid) return;
+    
+    const weaponTicks = weapon.onClick(player);
+    activate(player, item, weaponTicks);
+  },
+  priority: Priority.HIGHEST
 });
 
-world.afterEvents.playerSwingStart.subscribe((event: PlayerSwingStartAfterEvent) => {
-  const player = event.player;
-  const item = event.heldItemStack;
-  if (!item) return;
-  if (!item.typeId.startsWith('bmc:')) return;
-
-  const weapon = getWeapon(item.typeId);
-  if (!weapon) return;
-  if (nowCooldown(player, item)) return;
-  if (!nowActivated(player, item)) return;
-  if (!player || !player.isValid) return;
-
-  weapon.onArmSwing?.(player);
+EventManager.registerAfter('playerSwingStart', {
+  handler(event) {
+    const player = event.player;
+    const item = event.heldItemStack;
+    if (!item) return;
+    if (!item.typeId.startsWith('bmc:')) return;
+    
+    const weapon = getWeapon(item.typeId);
+    if (!weapon) return;
+    if (nowCooldown(player, item)) return;
+    if (!nowActivated(player, item)) return;
+    if (!player || !player.isValid) return;
+    
+    weapon.onArmSwing?.(player);
+  },
+  priority: Priority.HIGHEST
 });
 
-world.afterEvents.playerButtonInput.subscribe((event: PlayerButtonInputAfterEvent) => {
-  if (event.button != InputButton.Sneak) return;
-  if (event.newButtonState != ButtonState.Pressed) return;
-
-  const player = event.player;
-  const item = player.getComponent('minecraft:inventory')?.container.getItem(player.selectedSlotIndex);
-  if (!item) return;
-  if (!item.typeId.startsWith('bmc:')) return;
-
-  const weapon = getWeapon(item.typeId);
-  if (!weapon) return;
-  if (nowCooldown(player, item)) return;
-  if (!nowActivated(player, item)) return;
-  if (!player || !player.isValid) return;
-
-  weapon.onSneaking?.(player);
+EventManager.registerAfter('playerButtonInput', {
+  handler(event) {
+    if (event.button != InputButton.Sneak) return;
+    if (event.newButtonState != ButtonState.Pressed) return;
+    
+    const player = event.player;
+    const item = player.getComponent('minecraft:inventory')?.container.getItem(player.selectedSlotIndex);
+    if (!item) return;
+    if (!item.typeId.startsWith('bmc:')) return;
+    
+    const weapon = getWeapon(item.typeId);
+    if (!weapon) return;
+    if (nowCooldown(player, item)) return;
+    if (!nowActivated(player, item)) return;
+    if (!player || !player.isValid) return;
+    
+    weapon.onSneaking?.(player);
+  },
+  priority: Priority.HIGHEST
 });
 
-world.beforeEvents.playerLeave.subscribe((event: PlayerLeaveBeforeEvent) => {
-  const player = event.player;
-  if (!player) return;
+EventManager.registerBefore('playerLeave', {
+  handler(event) {
+    const player = event.player;
+    if (!player) return;
+    for (let slot = 0; slot < 9; ++slot) {
+        const item = player.getComponent('minecraft:inventory')?.container.getItem(slot);
+        if (!item || !item.typeId.startsWith('bmc:')) continue;
 
-  for (const id of player.getDynamicPropertyIds()) {
-    if (id.includes('weapon_')) {
-      player.setDynamicProperty(id);
+        const weapon = getWeapon(item.typeId);
+        if (!weapon) continue;
+
+        weapon.onEnd?.(player);
+      }
+    
+    for (const id of player.getDynamicPropertyIds()) {
+      if (id.includes('weapon_')) {
+        player.setDynamicProperty(id);
+      }
     }
-  }
+  },
+  priority: Priority.HIGHEST
 });
 
 repeating({
