@@ -3,7 +3,7 @@
 BowyersMCの武器機構を実装したビヘイビアパックとリソースパック
 <br /><br />
 
-## 注意
+## はじめに
 scripts直下のコードは、私が参加している[ScriptAPIの開発支援フレームワーク](https://github.com/XxPMMPERxX/Keystone) (以降Keystoneと表記) を用いたコードであるため、コンパイルしないと**動きません**。
 
 Releasesに添付するつもりであるものは使えるようにする予定ですが、あくまでもコードの公開とこれを機に勉強をしてみたいといった人間がいる可能性があると想定してコメント付きで分かりやすくまとめてます。  
@@ -20,7 +20,12 @@ Releasesに添付するつもりであるものは使えるようにする予定
 - [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/bastet.png" /> Bastet  -  腕振りトリガーの実装例として作成
 - [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/leaper.png" /> Leaper  -  効果継続時間を持たない実装例として作成
 - [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/parallel.png" /> Parallel  -  可変クールタイムの実装例として作成
-- [ ] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/shock_waver.png" /> ShockWaver  -  エンティティを扱う実装例として作成
+- [x] <img width="20" height="20" alt="" src="https://raw.githubusercontent.com/BowyersMC/bowyersmc.github.io/wiki/images/weapon/shock_waver.png" /> ShockWaver  -  エンティティを扱う実装例として作成
+
+<br />
+
+## 利用上の注意
+- Parallelを使う場合に、ワールドの描画距離設定が低いとうまくテレポートがされない可能性があります。
 
 <br />
 
