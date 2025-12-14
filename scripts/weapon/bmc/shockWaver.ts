@@ -42,9 +42,9 @@ class ShockWaver extends Weapon {
 
     // 速度の付与
     const velocity = Vector3.fromBDS(player.getViewDirection()).normalize();
-    velocity.x *= 1.2;
+    velocity.x *= 2.3;
     velocity.y = -0.06;
-    velocity.z *= 1.2;
+    velocity.z *= 2.3;
     slimeElement.applyImpulse(velocity);
 
     // 効果音
@@ -67,9 +67,9 @@ class ShockWaver extends Weapon {
 
     // 速度の付与
     const velocity = Vector3.fromBDS(player.getViewDirection()).normalize();
-    velocity.x *= 1.75;
+    velocity.x *= 2.5;
     velocity.y = 1;
-    velocity.z *= 1.75;
+    velocity.z *= 2.5;
     slime.applyImpulse(velocity);
 
     // スイングデータを初期化
@@ -116,7 +116,7 @@ class ShockWaver extends Weapon {
     for (const p of slime.dimension.getPlayers()) {
 
       // 距離判断による衝突判定
-      if (this.isIntersects(slime.getAABB(), player.getAABB())) {
+      if (this.isIntersects(slime.getAABB(), p.getAABB())) {
 
         // 吹き飛ばし
         p.clearVelocity();
@@ -127,7 +127,7 @@ class ShockWaver extends Weapon {
         p.applyImpulse(velocity);
 
         // 効果音
-        player.dimension.playSound('item.trident.riptide_2', player.location);
+        p.dimension.playSound('item.trident.riptide_2', p.location);
 
         if (slime.getDynamicProperty(this.summonerKey) != p.id) {
           // 鈍足の付与
