@@ -1,11 +1,11 @@
 {
   "format_version": 2,
   "header": {
-    "name": "BMC_Weapon - Resource",
     "description": "BMC_Weaponのリソースパック",
+    "name": "BMC_Weapon - Resource",
     "uuid": "860d5eeb-4071-4c5c-a5a6-08bb717b4772",
     "version": [ 1, 0, 0 ],
-    "min_engine_version": [ 1, 21, 120 ]
+    "min_engine_version": [ 1, 21, 110 ]
   },
   "modules": [
     {

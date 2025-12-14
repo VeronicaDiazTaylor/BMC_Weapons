@@ -14,7 +14,7 @@
       "language": "javascript",
       "uuid": "f26e468f-6c85-4a03-ad1a-24dcb8763c6b",
       "version": [ 1, 0, 0 ],
-      "entry": "scripts/index-C2T0aVVo.js"
+      "entry": "scripts/index.js"
     }
   ],
   "dependencies": [

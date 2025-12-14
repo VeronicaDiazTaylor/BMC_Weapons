@@ -3,3 +3,6 @@ item.bmc:bastet=バステト
 item.bmc:leaper=リーパー
 item.bmc:parallel=パラレル
 item.bmc:shock_waver=ショックウェーバー
+
+entity.bmc:shock_waver_element.name=ショックウェーバーエレメント
+entity.bmc:shock_waver_slime.name=ショックウェーバースライム
