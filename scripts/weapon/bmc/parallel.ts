@@ -17,7 +17,7 @@
 import { Player, Vector3 as BDSVector3 } from '@minecraft/server';
 import { register } from '../weaponRegistry';
 import { Weapon, WeaponTicks } from '../weapon';
-import { delayed, Vector3 } from '@gollilla/keystone';
+import { delayed, Vector3 } from 'keystonemc';
 
 class Parallel extends Weapon {
   private static DELAY_SOUND = 4; // 0.2s

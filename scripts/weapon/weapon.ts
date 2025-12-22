@@ -27,7 +27,7 @@ export type WeaponTicks = {
   cooldown: number
 }
 
-export abstract class Weapon {  
+export abstract class Weapon {
   /** ビヘイビアーで設定したタイプID */
   abstract typeId: string;
 

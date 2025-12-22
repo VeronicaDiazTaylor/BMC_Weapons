@@ -17,7 +17,7 @@
 import { MolangVariableMap, Player } from '@minecraft/server';
 import { register } from '../weaponRegistry';
 import { Weapon, WeaponTicks } from '../weapon';
-import { Vector3 } from '@gollilla/keystone';
+import { Vector3 } from 'keystonemc';
 
 class Bastet extends Weapon {
   private static DURATION = 6*20;

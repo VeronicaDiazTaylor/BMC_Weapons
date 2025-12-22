@@ -17,7 +17,7 @@
 import { Player } from '@minecraft/server';
 import { register } from '../weaponRegistry';
 import { Weapon, WeaponTicks } from '../weapon';
-import { delayed, Vector3 } from '@gollilla/keystone';
+import { delayed, Vector3 } from 'keystonemc';
 
 class Airride extends Weapon {
   // 静的な数値の定義
