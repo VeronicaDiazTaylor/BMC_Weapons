@@ -65,9 +65,6 @@ function activate(player: Player, weaponItem: ItemStack, weaponTicks: WeaponTick
   });
 }
 
-// イベントマネージャーのイニシャライズ処理
-EventManager.initialize();
-
 // ウェポン使用
 EventManager.registerAfter('itemUse', {
   handler(event) {
@@ -221,9 +218,7 @@ repeating({
         weapon.onTick?.(player, slot == player.selectedSlotIndex, nowActivated(player, item));
       }
     }
-  },
-  endless: true,
-  every: 1
+  }
 });
 
 // エンティティのティック
@@ -266,9 +261,7 @@ repeating({
         }
       }
     }
-  },
-  every: 1,
-  endless: true
+  }
 });
 
 /**
